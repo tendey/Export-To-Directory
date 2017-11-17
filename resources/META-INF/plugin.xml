@@ -1,0 +1,76 @@
+<idea-plugin>
+    <id>com.htz.plugin.export</id>
+    <name>Export To Directory</name>
+    <version>1.0</version>
+    <vendor email="twize@163.com" url="https://github.com/tendey">HTZ</vendor>
+
+    <description>
+        <![CDATA[
+        导出项目文件并保持文件结构。插件运行在IDEA 2017.1，jdk 1.6上没有问题，有问题请邮件联系
+        <br>举例：<br>
+      选择一个文件夹 D:\E\F
+      <ul>
+  <li>如果选择的是正常的项目文件 <br>C:\A\B\<strong>项目名</strong>\XXX\...\CC.txt,
+      <br>文件将会导出在<br> D:\E\F\<strong>项目名</strong>\XXX\...\CC.txt
+</li>
+  <li>如果选择的是外部引入的module的文件<br>F:\W\K\<strong>外部模块名</strong>\XXX\...\CC.txt
+<br>文件将会导出在<br>D:\E\F\<strong>外部模块名</strong>\XXX\...\CC.txt
+</li>
+  <li> 如果选择的是引用的jar ,文件将会导出在<br> D:\E\F\ExternalReference+时间戳\CC.jar
+</li>
+</ul>
+如果导出的文件太多，请耐心等待，直到提示框出现。<br>
+你可以下载源代码自己定制。
+]]>
+        <![CDATA[
+         <br>
+      Export files to directory and hold there path structure<br>
+      The plugin run at IDEA 2017.1，jdk 1.6 have no error,if you have error,please email;<br>
+      eg. <br>
+      export to director D:\E\F
+      <ul>
+  <li>if  select a project file ,its path is <br>C:\A\B\<strong>YourProjectName</strong>\XXX\...\CC.txt,
+      <br>and then ,it will be exported in<br> D:\E\F\<strong>YourProjectName</strong>\XXX\...\CC.txt
+</li>
+  <li>if select an external module file,its path is<br> F:\W\K\<strong>ExternalModuleName</strong>\XXX\...\CC.txt
+<br>and then ,it will be exported in <br>D:\E\F\<strong>ExternalModuleName</strong>\XXX\...\CC.txt
+</li>
+  <li> if select a jar which in external libraries ,and then it will be exported in<br> D:\E\F\ExternalReference+timestamp\CC.jar
+</li>
+
+</ul>
+if too much files,please wait,until the complete dialog show. <br>
+you can download sources to create your custom plugin.
+   ]]></description>
+
+    <change-notes><![CDATA[
+     No changes<br>
+    ]]>
+    </change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="145.0"/>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+        <action id="ExportToDirectory" class="ExportAction" text="Export to Directory"
+                description="Select files to Export">
+            <add-to-group group-id="CutCopyPasteGroup" anchor="after" relative-to-action="$Paste"/>
+            <add-to-group group-id="ExternalSystem.Actions" anchor="first"/>
+            <add-to-group group-id="PrintExportGroup" anchor="before" relative-to-action="ExportToHTML"/>
+        </action>
+    </actions>
+
+    <application-components>
+    </application-components>
+</idea-plugin>
