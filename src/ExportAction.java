@@ -84,14 +84,15 @@ public class ExportAction extends AnAction {
                     } else {
                         //如果不在模块路径下，比如引用的jar，则files[i].getParent()返回的是null
                         //有可能存在既不是文件也不是文件夹的file，比如用户选择了jar里的某个类文件
-                        if (uploadFile.isFile()) {
-                            tempPath = uploadFile.getParentFile().getCanonicalPath();
-                            tempPath = tempPath.substring(2);//去掉盘符
-                        } else if (uploadFile.isDirectory()) {
-                            tempPath = uploadFile.getCanonicalPath();
-                            tempPath = tempPath.substring(2);//去掉盘符
-                        }
-                        tempPath = "";//暂时不保留引用的外部文件的路径
+//                        if (uploadFile.isFile()) {
+//                            tempPath = uploadFile.getParentFile().getCanonicalPath();
+//                            tempPath = tempPath.substring(2);//去掉盘符
+//                        } else if (uploadFile.isDirectory()) {
+//                            tempPath = uploadFile.getCanonicalPath();
+//                            tempPath = tempPath.substring(2);//去掉盘符
+//                        }
+                        getOutModuleFilePath(uploadFile,files[i]);
+////                        tempPath = "";//暂时不保留引用的外部文件的路径
                         relPath = "ExternalReference" + System.currentTimeMillis() + tempPath;
                     }
                     File saveUploadFile = new File(toDir + "/" + relPath);
@@ -109,6 +110,41 @@ public class ExportAction extends AnAction {
                 e.printStackTrace();
             }
         }
+    }
+    public String getOutModuleFilePath(File uploadFile,VirtualFile file){
+        String path="";
+        String projectName = mProject.getName(), moduleName = "",
+                mProjectBasePath = mProject.getBasePath(),
+                relPath = "", tempPath = "", filePath = "", moduleBasePath = "";
+        ProjectFileIndex projectFileIndex = ProjectFileIndex.SERVICE.getInstance(mProject);
+        Module module = projectFileIndex.getModuleForFile(file,false);;
+        VirtualFile moduleRoot;
+        //模块内的文件
+        moduleRoot = projectFileIndex.getContentRootForFile(file,false);
+        System.out.println(moduleRoot.getCanonicalPath());
+        moduleBasePath = moduleRoot.getCanonicalPath();
+        moduleName = module.getName();
+        //在标准项目路径里,即文件是在根模块下
+        boolean inBaseModule = file.getCanonicalPath().contains(mProjectBasePath);
+        if (inBaseModule) {
+            if (uploadFile.isFile()) {
+                tempPath = file.getParent().getCanonicalPath();
+            } else if (uploadFile.isDirectory()) {
+                tempPath = file.getCanonicalPath();
+            }
+            tempPath = tempPath.replace(mProjectBasePath, "");
+            relPath = projectName + tempPath;
+        } else {
+            //如果不在标准项目路径，比如引用的、导入的其他地方的module
+            if (uploadFile.isFile()) {
+                tempPath = file.getParent().getCanonicalPath();
+            } else if (uploadFile.isDirectory()) {
+                tempPath = file.getCanonicalPath();
+            }
+            tempPath = tempPath.replace(moduleBasePath, "");
+            relPath = moduleName + tempPath;
+        }
+        return path;
     }
 
 }
